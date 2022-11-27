@@ -8,7 +8,7 @@ public class Party {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_id")
-    private Long id;
+    private long id;
 
     @Column(name = "party_name")
     private String name;
@@ -17,12 +17,12 @@ public class Party {
 
     }
 
-    public Party(Long id, String name) {
+    public Party(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -30,7 +30,7 @@ public class Party {
         return name;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

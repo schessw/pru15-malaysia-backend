@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface PartyRepository extends JpaRepository<Party, Long> {
-    @Query(value = "SELECT * FROM party p WHERE p.party_name = :name", nativeQuery = true)
+    @Query(value = "SELECT * FROM party p WHERE LOWER(p.party_name) LIKE '%' + LOWER(:name) + '%'", nativeQuery = true)
     List<Party> findByNameContaining(@Param("name") String party_name);
 }

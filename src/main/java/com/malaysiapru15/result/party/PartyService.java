@@ -2,11 +2,10 @@ package com.malaysiapru15.result.party;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -18,43 +17,51 @@ public class PartyService {
         this.partyRepository = partyRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Party> getParty() {
         return partyRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Party> getParty(String party_name) {
-        List<Party> parties = new ArrayList<Party>();
-        partyRepository.findByNameContaining(party_name).forEach(parties::add);
+        List<Party> parties = new ArrayList<>(partyRepository.findByNameContaining(party_name));
 
         if(parties.isEmpty()) {
-            return new ArrayList<Party>();
+            return new ArrayList<>();
         } else {
             return parties;
         }
     }
 
+    @Transactional(readOnly = true)
     public Optional<Party> getPartyById(long id) {
-        Optional<Party> parties = partyRepository.findById(id);
-
-        return parties;
+        try {
+            return partyRepository.findById(id);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
+    @Transactional
     public Party addParty(Party party) {
         return partyRepository.save(party);
     }
 
     @Transactional
-    public Party updateParty(Party party, Long party_id) {
-        Party p = partyRepository.findById(party_id).get();
+    public Party updateParty(Party party, long party_id) {
+        Optional<Party> p = partyRepository.findById(party_id);
 
-        if (Objects.nonNull(party.getName()) && !"".equalsIgnoreCase(party.getName())) {
-            p.setName(party.getName());
+        if (p.isPresent()) {
+            Party _p = p.get();
+            _p.setName(party.getName());
+            return partyRepository.save(_p);
+        } else {
+            return new Party();
         }
-
-        return partyRepository.save(p);
     }
 
-    public void deleteParty(Long party_id) {
+    @Transactional
+    public void deleteParty(long party_id) {
         boolean exists = partyRepository.existsById(party_id);
 
         if(!exists) {
