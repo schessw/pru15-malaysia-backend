@@ -8,7 +8,7 @@ public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "state_id")
-    private Long id;
+    private long id;
 
     @Column(name = "state_name")
     private String name;
@@ -17,12 +17,12 @@ public class State {
 
     }
 
-    public State(Long id, String name) {
+    public State(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -30,7 +30,7 @@ public class State {
         return name;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

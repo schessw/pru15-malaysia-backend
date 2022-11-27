@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface StateRepository extends JpaRepository<State, Long> {
-    @Query(value = "SELECT * FROM state s WHERE s.state_name = :name", nativeQuery = true)
+    @Query(value = "SELECT * FROM state s WHERE LOWER(s.state_name) LIKE '%' + LOWER(:name) + '%'", nativeQuery = true)
     List<State> findByNameContaining(@Param("name") String state_name);
 }
