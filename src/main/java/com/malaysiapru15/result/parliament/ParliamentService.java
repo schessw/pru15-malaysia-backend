@@ -2,10 +2,12 @@ package com.malaysiapru15.result.parliament;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class ParliamentService {
@@ -15,38 +17,86 @@ public class ParliamentService {
     public ParliamentService(ParliamentRepository parliamentRepository) {
         this.parliamentRepository = parliamentRepository;
     }
-    public List<Parliament> getParliaments() {
+
+    @Transactional(readOnly = true)
+    public List<Parliament> getParliament() {
         return parliamentRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<Parliament> getParliamentByName(String parliament_name) {
+        List<Parliament> parliaments = new ArrayList<>(parliamentRepository.findByNameContaining(parliament_name));
+
+        if(parliaments.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            return parliaments;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Parliament> getParliamentByCode(String parliament_code) {
+        List<Parliament> parliaments = new ArrayList<>(parliamentRepository.findByCodeContaining(parliament_code));
+
+        if(parliaments.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            return parliaments;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Parliament> getParliamentById(long id) {
+        try {
+            return parliamentRepository.findById(id);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Parliament> getParliamentByState(long id) {
+        try {
+            return parliamentRepository.findByStateId(id);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional
     public Parliament addParliament(Parliament parliament) {
         return parliamentRepository.save(parliament);
     }
 
     @Transactional
-    public Parliament updateParliament(Parliament parliament, Long parliament_id) {
-        Parliament p = parliamentRepository.findById(parliament_id).get();
+    public Parliament updateParliament(Parliament parliament, long parliament_id) {
+        Optional<Parliament> p = parliamentRepository.findById(parliament_id);
 
-        if (Objects.nonNull(parliament.getParliament_code()) && !"".equalsIgnoreCase(parliament.getParliament_code())) {
-            p.setParliament_code(parliament.getParliament_code());
+        if (p.isPresent()) {
+            Parliament _p = p.get();
+
+            if (Objects.nonNull(parliament.getName()) && !"".equalsIgnoreCase(parliament.getName())) {
+                _p.setName(parliament.getName());
+            }
+
+            if (Objects.nonNull(parliament.getCode()) && !"".equalsIgnoreCase(parliament.getCode())) {
+                _p.setCode(parliament.getCode());
+            }
+
+            return parliamentRepository.save(_p);
+        } else {
+            return new Parliament();
         }
-
-        if (Objects.nonNull(parliament.getParliament_name()) && !"".equalsIgnoreCase(parliament.getParliament_name())) {
-            p.setParliament_name(parliament.getParliament_name());
-        }
-
-        if (Objects.nonNull(parliament.getState_id())) {
-            p.setState_id(parliament.getState_id());
-        }
-
-        return parliamentRepository.save(p);
     }
 
-    public void deleteParliamentById(Long parliament_id) {
+    @Transactional
+    public void deleteParliament(long parliament_id) {
         boolean exists = parliamentRepository.existsById(parliament_id);
+
         if(!exists) {
             throw new IllegalStateException("Parliament with ID = " + parliament_id + " not found.");
         }
+
         parliamentRepository.deleteById(parliament_id);
     }
 }

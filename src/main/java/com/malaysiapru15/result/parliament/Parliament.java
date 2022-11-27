@@ -1,66 +1,80 @@
 package com.malaysiapru15.result.parliament;
 
+import com.malaysiapru15.result.state.State;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name="parliament")
+@Table(name = "parliament")
 public class Parliament {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long parliament_id;
-    @Column(name="parliament_name")
-    private String parliament_name;  // Name of the seat
-    @Column(name="parliament_code")
-    private String parliament_code;  //
-    @Column(name="state_id")
-    private int state_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "parliament_id")
+    private long id;
+
+    @Column(name = "parliament_name")
+    private String name;
+
+    @Column(name = "parliament_code")
+    private String code;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "state_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private State state;
 
     public Parliament() {
 
     }
 
-    public Parliament(Long parliament_id, String parliament_name, String parliament_code, int state_id) {
-        this.parliament_id = parliament_id;
-        this.parliament_name = parliament_name;
-        this.parliament_code = parliament_code;
-        this.state_id = state_id;
+    public Parliament(long parliament_id, String parliament_name, String parliament_code, State state) {
+        this.id = parliament_id;
+        this.name = parliament_name;
+        this.code = parliament_code;
+        this.state = state;
     }
 
-    public Long getParliament_id() {
-        return parliament_id;
+    public long getId() {
+        return id;
     }
 
-    public String getParliament_name() {
-        return parliament_name;
+    public String getName() {
+        return name;
     }
 
-    public String getParliament_code() {
-        return parliament_code;
+    public String getCode() {
+        return code;
     }
 
-    public int getState_id() {
-        return state_id;
+    public State getState() {
+        return state;
     }
 
-    public void setParliament_id(Long parliament_id) {
-        this.parliament_id = parliament_id;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setParliament_name(String parliament_name) {
-        this.parliament_name = parliament_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setParliament_code(String parliament_code) {
-        this.parliament_code = parliament_code;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public void setState_id(int state_id) {
-        this.state_id = state_id;
+    public void setState(State state) {
+        this.state = state;
     }
 
     @Override
     public String toString() {
-        return "parliament_name=" + parliament_name + "; parliament_code=" + parliament_code +
-                "; state_id=" + state_id;
+        return "Parliament{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", state=" + state +
+                '}';
     }
 }
