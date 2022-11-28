@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "parliament")
@@ -14,9 +15,11 @@ public class Parliament {
     @Column(name = "parliament_id")
     private long id;
 
+    @NotNull
     @Column(name = "parliament_name")
     private String name;
 
+    @NotNull
     @Column(name = "parliament_code")
     private String code;
 

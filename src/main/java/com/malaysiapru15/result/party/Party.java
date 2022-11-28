@@ -1,5 +1,7 @@
 package com.malaysiapru15.result.party;
 
+import javax.validation.constraints.NotNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class Party {
     @Column(name = "party_id")
     private long id;
 
+    @NotNull
     @Column(name = "party_name")
     private String name;
 

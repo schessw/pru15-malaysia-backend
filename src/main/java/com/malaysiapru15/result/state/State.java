@@ -1,5 +1,7 @@
 package com.malaysiapru15.result.state;
 
+import javax.validation.constraints.NotNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class State {
     @Column(name = "state_id")
     private long id;
 
+    @NotNull
     @Column(name = "state_name")
     private String name;
 
